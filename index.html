@@ -32,6 +32,7 @@
             color: red;
             font-size: 0.9em;
             margin-top: 5px;
+            display: none;
         }
         .success {
             color: green;
@@ -56,75 +57,74 @@
     <form id="registrationForm">
         <div class="form-group">
             <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name">
+            <span class="error" id="nameError">Campo obrigatório.</span>
         </div>
         <div class="form-group">
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email">
+            <span class="error" id="emailError">Campo obrigatório.</span>
         </div>
         <div class="form-group">
             <label for="confirmEmail">Confirme o E-mail:</label>
-            <input type="email" id="confirmEmail" name="confirmEmail" required>
+            <input type="email" id="confirmEmail" name="confirmEmail">
+            <span class="error" id="confirmEmailError">Os e-mails digitados não coincidem.</span>
         </div>
         <div class="form-group">
             <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
+            <input type="password" id="password" name="password">
             <small>A senha deve ter no mínimo 8 caracteres, <br> 1 letra maiúscula e 1 número.</small>
+            <span class="error" id="passwordError">A senha deve ter no mínimo 8 caracteres, 1 letra maiúscula e 1 número.</span>
         </div>
         <div class="form-group">
-            <button type="submit">Cadastrar</button>
+            <button type="button" id="submitButton">Cadastrar</button>
         </div>
     </form>
 
-    <div id="message" class="hidden"></div>
+    <div id="message"></div>
 
     <script>
-        document.getElementById('registrationForm').addEventListener('click', function (event) {
-            event.preventDefault();
-
-
-            document.getElementById('message').innerHTML = '';
-            document.getElementById('message').classList.remove('success', 'error');
-
+        document.getElementById('submitButton').addEventListener('click', function () {
+            let isValid = true;
 
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const confirmEmail = document.getElementById('confirmEmail').value.trim();
             const password = document.getElementById('password').value.trim();
 
+            // Limpar mensagens de erro anteriores
+            document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+            document.getElementById('message').innerHTML = '';
+            document.getElementById('message').classList.remove('success', 'error');
 
-            if (!name || !email || !confirmEmail || !password) {
-                showMessage('Todos os campos são obrigatórios.', 'error');
-                return;
+            // Validações
+            if (!name) {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
             }
-
-
-            if (email !== confirmEmail) {
-                showMessage('Os e-mails digitados não coincidem.', 'error');
-                return;
+            if (!email) {
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
             }
-
+            if (email !== confirmEmail || !confirmEmail) {
+                document.getElementById('confirmEmailError').style.display = 'block';
+                isValid = false;
+            }
 
             const minLength = 8;
             const hasUpperCase = /[A-Z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
 
             if (password.length < minLength || !hasUpperCase || !hasNumber) {
-                showMessage('A senha deve ter no mínimo 8 caracteres, 1 letra maiúscula e 1 número.', 'error');
-                return;
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
             }
 
+            if (!isValid) return;
 
-            showMessage('Cadastro realizado com sucesso!', 'success');
+            document.getElementById('message').textContent = 'Cadastro realizado com sucesso!';
+            document.getElementById('message').classList.add('success');
         });
-
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = message;
-            messageDiv.classList.add(type);
-            messageDiv.style.display = 'block';
-        }
     </script>
 </body>
 </html>
