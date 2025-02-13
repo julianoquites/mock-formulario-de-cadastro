@@ -92,12 +92,10 @@
             const confirmEmail = document.getElementById('confirmEmail').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            // Limpar mensagens de erro anteriores
             document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
             document.getElementById('message').innerHTML = '';
             document.getElementById('message').classList.remove('success', 'error');
 
-            // Validações
             if (!name) {
                 document.getElementById('nameError').style.display = 'block';
                 isValid = false;
